@@ -3,136 +3,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI-powered supply chain disruption analyzer for Manikanta Enterprises. Summarize supplier delays, assess customer impact, and get actionable recommendations.">
   <title>AI Supply Chain Disruption Alert Summarizer | Manikanta Enterprises</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
   <link rel="stylesheet" href="style.css">
-  <!-- Chart.js for dashboard charts -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Lucide Icons CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+  <!-- Animated Background Orbs -->
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+
   <div class="container">
     <!-- Header -->
     <header>
       <div class="logo-section">
-        <div class="logo-icon">ME</div>
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
         <div class="logo-text">
-          <h1>Supply Chain Summarizer</h1>
-          <span>Manikanta Enterprises</span>
+          <h1>Supply Chain AI</h1>
+          <span>Manikanta Enterprises &bull; Hyderabad</span>
         </div>
       </div>
       <div class="header-actions">
-        <!-- Navigation Tabs -->
-        <nav class="tabs">
-          <button class="tab-btn active" data-tab="summarizer">
-            <i data-lucide="cpu" style="width: 16px; height: 16px;"></i> Summarizer
+        <nav class="tabs" id="mainNav">
+          <button class="tab-btn active" data-tab="summarizer" id="tab-summarizer">
+            <i data-lucide="cpu" style="width:16px;height:16px;"></i>
+            <span class="tab-label">Summarizer</span>
           </button>
-          <button class="tab-btn" data-tab="history">
-            <i data-lucide="history" style="width: 16px; height: 16px;"></i> History Log
+          <button class="tab-btn" data-tab="history" id="tab-history">
+            <i data-lucide="clock-3" style="width:16px;height:16px;"></i>
+            <span class="tab-label">History</span>
           </button>
-          <button class="tab-btn" data-tab="analytics">
-            <i data-lucide="bar-chart-3" style="width: 16px; height: 16px;"></i> Analytics
+          <button class="tab-btn" data-tab="analytics" id="tab-analytics">
+            <i data-lucide="trending-up" style="width:16px;height:16px;"></i>
+            <span class="tab-label">Analytics</span>
           </button>
         </nav>
-        <!-- Theme Toggle Button -->
-        <button id="themeToggle" class="theme-btn" title="Toggle Light/Dark Mode">
-          <i data-lucide="sun" class="sun-icon" style="width: 20px; height: 20px;"></i>
+        <button id="themeToggle" class="theme-btn" title="Toggle Light/Dark Mode" aria-label="Toggle theme">
+          <i data-lucide="sun" class="sun-icon" style="width:18px;height:18px;"></i>
         </button>
       </div>
     </header>
 
-    <!-- Main Screens -->
-
-    <!-- Screen 1: Summarizer -->
+    <!-- ============================================ -->
+    <!-- SCREEN 1: SUMMARIZER                         -->
+    <!-- ============================================ -->
     <main id="summarizerScreen" class="screen active">
       <div class="dashboard-grid">
-        <!-- Input Form Section -->
-        <section class="card">
+        <!-- Left: Input Form -->
+        <section class="card card-form">
           <h2 class="card-title">
-            <i data-lucide="file-edit" style="color: var(--accent-primary);"></i> Disruption Details
+            <i data-lucide="file-edit" style="color:var(--accent-primary);width:20px;height:20px;"></i>
+            Disruption Input
           </h2>
 
-          <!-- Presets Panel -->
+          <!-- Quick Preset Scenarios -->
           <div class="presets-container">
-            <span class="presets-label">Template Presets</span>
-            <div id="presetChips" class="preset-chips">
-              <!-- Preset chips loaded by JS -->
-            </div>
+            <span class="presets-label">
+              <i data-lucide="zap" style="width:12px;height:12px;"></i>
+              Quick Templates
+            </span>
+            <div id="presetChips" class="preset-chips"></div>
           </div>
 
-          <form id="disruptionForm">
+          <form id="disruptionForm" autocomplete="off">
             <div class="form-group">
-              <label for="adminName">Admin Name <span class="required">*</span></label>
+              <label for="adminName">
+                <i data-lucide="user" style="width:14px;height:14px;opacity:0.6;"></i>
+                Admin Name <span class="required">*</span>
+              </label>
               <input type="text" id="adminName" class="form-control" placeholder="Enter your name" required>
             </div>
-
             <div class="form-group">
-              <label for="supplierName">Supplier Name <span class="required">*</span></label>
-              <input type="text" id="supplierName" class="form-control" placeholder="e.g., Hyderabad Wholesale Logistics, Krishna Agro Industries" required>
+              <label for="supplierName">
+                <i data-lucide="truck" style="width:14px;height:14px;opacity:0.6;"></i>
+                Supplier Name <span class="required">*</span>
+              </label>
+              <input type="text" id="supplierName" class="form-control" placeholder="e.g., Krishna Agro Industries" required>
             </div>
-
             <div class="form-group">
-              <label for="supplierInputs">Supplier Communication / Delay Notice <span class="required">*</span></label>
-              <textarea id="supplierInputs" class="form-control" placeholder="Paste the supplier email, WhatsApp text, or details regarding the delay/shortage..." required></textarea>
+              <label for="supplierInputs">
+                <i data-lucide="message-square" style="width:14px;height:14px;opacity:0.6;"></i>
+                Supplier Communication <span class="required">*</span>
+              </label>
+              <textarea id="supplierInputs" class="form-control" placeholder="Paste the supplier email, WhatsApp text, phone call notes, or delay notice details here..." required></textarea>
               <div id="charCounter" class="char-counter">0 characters</div>
             </div>
-
             <button type="submit" class="btn btn-primary" id="submitBtn">
-              <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i> Generate AI Summary
+              <i data-lucide="sparkles" style="width:16px;height:16px;"></i>
+              <span>Generate AI Summary</span>
             </button>
           </form>
         </section>
 
-        <!-- Output Summary Display Section -->
-        <section class="card" id="outputCard">
+        <!-- Right: Output Display -->
+        <section class="card card-output" id="outputCard">
           <h2 class="card-title">
-            <i data-lucide="file-text" style="color: var(--accent-secondary);"></i> AI Analysis Report
+            <i data-lucide="brain" style="color:var(--accent-secondary);width:20px;height:20px;"></i>
+            AI Analysis Report
           </h2>
 
-          <!-- Placeholder when no report is generated -->
+          <!-- Empty State -->
           <div id="outputPlaceholder" class="output-placeholder">
             <div class="output-placeholder-icon">
-              <i data-lucide="brain-circuit" style="width: 48px; height: 48px;"></i>
+              <i data-lucide="scan-search" style="width:56px;height:56px;"></i>
             </div>
-            <h3>No Report Generated Yet</h3>
-            <p>Fill out the form on the left and click "Generate AI Summary" or select a preset to analyze a supplier alert using Groq Llama 3.</p>
+            <h3>Ready to Analyze</h3>
+            <p>Fill in the disruption details and click <strong>"Generate AI Summary"</strong> to get a comprehensive impact report powered by Llama 3.</p>
+            <div class="placeholder-features">
+              <div class="placeholder-feature">
+                <i data-lucide="shield-check" style="width:16px;height:16px;"></i>
+                <span>Executive Summary</span>
+              </div>
+              <div class="placeholder-feature">
+                <i data-lucide="users" style="width:16px;height:16px;"></i>
+                <span>Customer Impact</span>
+              </div>
+              <div class="placeholder-feature">
+                <i data-lucide="package" style="width:16px;height:16px;"></i>
+                <span>Affected Orders</span>
+              </div>
+              <div class="placeholder-feature">
+                <i data-lucide="lightbulb" style="width:16px;height:16px;"></i>
+                <span>Action Items</span>
+              </div>
+            </div>
           </div>
 
-          <!-- Loading state -->
+          <!-- Loading State -->
           <div id="loadingContainer" class="loading-container">
-            <div class="spinner"></div>
-            <p class="pulse-text" id="loadingText">Processing supplier alerts & estimating customer impact...</p>
+            <div class="loader-rings">
+              <div class="ring ring-1"></div>
+              <div class="ring ring-2"></div>
+              <div class="ring ring-3"></div>
+              <div class="ring-center">
+                <i data-lucide="brain" style="width:24px;height:24px;color:var(--accent-primary);"></i>
+              </div>
+            </div>
+            <div class="loading-steps">
+              <p class="pulse-text" id="loadingText">Analyzing supplier communication...</p>
+              <div class="loading-progress">
+                <div class="loading-progress-bar"></div>
+              </div>
+            </div>
           </div>
 
-          <!-- The generated report content -->
+          <!-- Generated Report Content -->
           <div id="outputContainer" class="output-container">
             <div class="output-header">
               <div class="meta-info">
-                <span>Lat:</span> <span id="outLatency">0s</span> |
-                <span>Ver:</span> <span id="outVersion">v4</span>
+                <span class="meta-badge">
+                  <i data-lucide="timer" style="width:12px;height:12px;"></i>
+                  <span id="outLatency">0s</span>
+                </span>
+                <span class="meta-badge">
+                  <i data-lucide="git-branch" style="width:12px;height:12px;"></i>
+                  Prompt <span id="outVersion">v4</span>
+                </span>
+                <span class="meta-badge meta-badge-success">
+                  <i data-lucide="check-circle-2" style="width:12px;height:12px;"></i>
+                  AI Generated
+                </span>
               </div>
               <div class="output-actions">
-                <button id="regenerateBtn" class="btn-icon" title="Regenerate Summary">
-                  <i data-lucide="rotate-cw" style="width: 16px; height: 16px;"></i>
+                <button id="regenerateBtn" class="btn-icon" title="Regenerate with fresh response">
+                  <i data-lucide="rotate-cw" style="width:15px;height:15px;"></i>
                 </button>
                 <button id="copyBtn" class="btn-icon" title="Copy to Clipboard">
-                  <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
+                  <i data-lucide="clipboard-copy" style="width:15px;height:15px;"></i>
                 </button>
-                <button id="downloadTxtBtn" class="btn-icon" title="Download Text File">
-                  <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+                <button id="downloadTxtBtn" class="btn-icon" title="Download as .txt">
+                  <i data-lucide="file-down" style="width:15px;height:15px;"></i>
                 </button>
-                <button id="printBtn" class="btn-icon" title="Export as PDF / Print">
-                  <i data-lucide="printer" style="width: 16px; height: 16px;"></i>
+                <button id="printBtn" class="btn-icon" title="Print / Export PDF">
+                  <i data-lucide="printer" style="width:15px;height:15px;"></i>
                 </button>
               </div>
             </div>
 
-            <!-- Markdown content will render here -->
             <div id="reportMarkdown" class="markdown-body"></div>
 
-            <!-- Feedback Rating Section -->
+            <!-- Feedback / Rating -->
             <div class="feedback-box">
-              <div class="feedback-title">Rate the quality of this AI output</div>
+              <div class="feedback-title">
+                <i data-lucide="star" style="width:14px;height:14px;color:var(--accent-warning);"></i>
+                Rate the Quality of this AI Output
+              </div>
               <div class="star-rating" id="starRating">
                 <span class="star" data-rating="1">★</span>
                 <span class="star" data-rating="2">★</span>
@@ -141,8 +201,10 @@
                 <span class="star" data-rating="5">★</span>
               </div>
               <div class="comment-input-container">
-                <input type="text" id="feedbackComment" class="form-control" placeholder="Add an optional comment to help improve prompt engineering...">
-                <button id="submitFeedbackBtn" class="btn btn-secondary" style="width: auto;">Submit</button>
+                <input type="text" id="feedbackComment" class="form-control" placeholder="Optional: add a comment about the output quality...">
+                <button id="submitFeedbackBtn" class="btn btn-secondary" style="width:auto;min-width:100px;">
+                  <i data-lucide="send" style="width:14px;height:14px;"></i> Submit
+                </button>
               </div>
             </div>
           </div>
@@ -150,96 +212,145 @@
       </div>
     </main>
 
-    <!-- Screen 2: History Log -->
+    <!-- ============================================ -->
+    <!-- SCREEN 2: HISTORY LOG                        -->
+    <!-- ============================================ -->
     <main id="historyScreen" class="screen">
       <section class="card">
-        <h2 class="card-title">
-          <i data-lucide="history" style="color: var(--accent-primary);"></i> Disruption Logs
-        </h2>
+        <div class="history-header-row">
+          <h2 class="card-title">
+            <i data-lucide="database" style="color:var(--accent-primary);width:20px;height:20px;"></i>
+            Disruption Logs
+          </h2>
+          <div class="history-count-badge" id="historyCountBadge">0 records</div>
+        </div>
         <div class="history-controls">
           <div class="search-wrapper">
-            <input type="text" id="historySearch" class="form-control" placeholder="Search by Supplier, Admin or keywords...">
+            <i data-lucide="search" class="search-icon" style="width:16px;height:16px;"></i>
+            <input type="text" id="historySearch" class="form-control search-input" placeholder="Search by supplier, admin, or keywords...">
           </div>
         </div>
-        <div id="historyList" class="history-list">
-          <!-- History items loaded dynamically -->
-        </div>
+        <div id="historyList" class="history-list"></div>
       </section>
     </main>
 
-    <!-- Screen 3: Analytics Dashboard -->
+    <!-- ============================================ -->
+    <!-- SCREEN 3: ANALYTICS DASHBOARD                -->
+    <!-- ============================================ -->
     <main id="analyticsScreen" class="screen">
-      <!-- High level stat counters -->
       <div class="analytics-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total Logged Alerts</div>
+        <div class="stat-card stat-card-1">
+          <div class="stat-icon-wrap">
+            <i data-lucide="activity" style="width:22px;height:22px;"></i>
+          </div>
           <div class="stat-val" id="statTotal">0</div>
+          <div class="stat-label">Total Alerts Logged</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Average Output Quality</div>
+        <div class="stat-card stat-card-2">
+          <div class="stat-icon-wrap">
+            <i data-lucide="star" style="width:22px;height:22px;"></i>
+          </div>
           <div class="stat-val" id="statRating">0.0 / 5</div>
+          <div class="stat-label">Average AI Quality</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Average AI Latency</div>
+        <div class="stat-card stat-card-3">
+          <div class="stat-icon-wrap">
+            <i data-lucide="zap" style="width:22px;height:22px;"></i>
+          </div>
           <div class="stat-val" id="statLatency">0.0s</div>
+          <div class="stat-label">Average Latency</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Feedback Coverage</div>
+        <div class="stat-card stat-card-4">
+          <div class="stat-icon-wrap">
+            <i data-lucide="pie-chart" style="width:22px;height:22px;"></i>
+          </div>
           <div class="stat-val" id="statCoverage">0%</div>
+          <div class="stat-label">Feedback Coverage</div>
         </div>
       </div>
 
-      <!-- Charts layout -->
       <div class="charts-grid">
         <div class="chart-card">
-          <h3 style="margin-bottom: 1rem; font-size: 1rem; color: var(--text-main);">Daily Disruption Volume</h3>
+          <div class="chart-card-header">
+            <h3>
+              <i data-lucide="bar-chart-3" style="width:16px;height:16px;color:var(--accent-primary);"></i>
+              Daily Disruption Volume
+            </h3>
+          </div>
           <div class="chart-container">
             <canvas id="volumeChart"></canvas>
           </div>
         </div>
         <div class="chart-card">
-          <h3 style="margin-bottom: 1rem; font-size: 1rem; color: var(--text-main);">Frequent Supplier Alerts</h3>
+          <div class="chart-card-header">
+            <h3>
+              <i data-lucide="truck" style="width:16px;height:16px;color:var(--accent-secondary);"></i>
+              Top Disrupting Suppliers
+            </h3>
+          </div>
           <div class="chart-container">
             <canvas id="supplierChart"></canvas>
           </div>
         </div>
       </div>
     </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <span>Powered by <strong>Groq Llama 3</strong> &bull; Built for <strong>Manikanta Enterprises</strong></span>
+      <span class="footer-version">v1.0.0</span>
+    </footer>
   </div>
 
   <!-- Detail Modal -->
   <div id="detailModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 id="modalTitle">Disruption Details</h3>
-        <button id="modalCloseBtn" class="modal-close">&times;</button>
+        <h3 id="modalTitle">
+          <i data-lucide="file-search" style="width:20px;height:20px;color:var(--accent-primary);"></i>
+          Disruption Report Detail
+        </h3>
+        <button id="modalCloseBtn" class="modal-close" aria-label="Close">
+          <i data-lucide="x" style="width:20px;height:20px;"></i>
+        </button>
       </div>
       <div class="modal-body">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px;">
-          <div><strong>Supplier:</strong> <span id="modalSupplier"></span></div>
-          <div><strong>Admin:</strong> <span id="modalAdmin"></span></div>
-          <div><strong>Report Date:</strong> <span id="modalDate"></span></div>
-          <div><strong>AI Latency:</strong> <span id="modalLatency"></span></div>
+        <div class="modal-meta-grid">
+          <div class="modal-meta-item">
+            <div class="modal-meta-label"><i data-lucide="truck" style="width:13px;height:13px;"></i> Supplier</div>
+            <div class="modal-meta-value" id="modalSupplier"></div>
+          </div>
+          <div class="modal-meta-item">
+            <div class="modal-meta-label"><i data-lucide="user" style="width:13px;height:13px;"></i> Admin</div>
+            <div class="modal-meta-value" id="modalAdmin"></div>
+          </div>
+          <div class="modal-meta-item">
+            <div class="modal-meta-label"><i data-lucide="calendar" style="width:13px;height:13px;"></i> Date</div>
+            <div class="modal-meta-value" id="modalDate"></div>
+          </div>
+          <div class="modal-meta-item">
+            <div class="modal-meta-label"><i data-lucide="timer" style="width:13px;height:13px;"></i> Latency</div>
+            <div class="modal-meta-value" id="modalLatency"></div>
+          </div>
         </div>
-        <div style="margin-bottom: 1.5rem;">
-          <h4 style="margin-bottom: 0.5rem; color: var(--accent-secondary);">Raw Communication Input:</h4>
-          <pre id="modalRawInput" style="white-space: pre-wrap; font-family: monospace; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; font-size: 0.85rem; border: 1px solid var(--card-border); max-height: 150px; overflow-y: auto; color: var(--text-muted);"></pre>
+        <div class="modal-section">
+          <h4><i data-lucide="mail" style="width:14px;height:14px;color:var(--accent-secondary);"></i> Raw Supplier Communication</h4>
+          <pre id="modalRawInput" class="modal-raw-input"></pre>
         </div>
-        <div>
-          <h4 style="margin-bottom: 0.5rem; color: var(--accent-primary);">AI Generated Summary Report:</h4>
-          <div id="modalAiOutput" class="markdown-body" style="background: rgba(0,0,0,0.1); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);"></div>
+        <div class="modal-section">
+          <h4><i data-lucide="brain" style="width:14px;height:14px;color:var(--accent-primary);"></i> AI Generated Summary</h4>
+          <div id="modalAiOutput" class="markdown-body modal-ai-output"></div>
         </div>
-        <div id="modalFeedbackInfo" style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--card-border); font-size: 0.9rem;">
-          <!-- Loaded dynamically -->
-        </div>
+        <div id="modalFeedbackInfo" class="modal-feedback-section"></div>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification -->
+  <!-- Toast -->
   <div id="toast" class="toast">
-    <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
+    <i data-lucide="check-circle" style="width:18px;height:18px;"></i>
     <span id="toastMessage">Action completed successfully.</span>
+    <div class="toast-progress"></div>
   </div>
 
   <script src="app.js"></script>
