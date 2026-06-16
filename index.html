@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Supply Chain Disruption Alert Summarizer | Manikanta Enterprises</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js for dashboard charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="logo-section">
+        <div class="logo-icon">ME</div>
+        <div class="logo-text">
+          <h1>Supply Chain Summarizer</h1>
+          <span>Manikanta Enterprises</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+          <button class="tab-btn active" data-tab="summarizer">
+            <i data-lucide="cpu" style="width: 16px; height: 16px;"></i> Summarizer
+          </button>
+          <button class="tab-btn" data-tab="history">
+            <i data-lucide="history" style="width: 16px; height: 16px;"></i> History Log
+          </button>
+          <button class="tab-btn" data-tab="analytics">
+            <i data-lucide="bar-chart-3" style="width: 16px; height: 16px;"></i> Analytics
+          </button>
+        </nav>
+        <!-- Theme Toggle Button -->
+        <button id="themeToggle" class="theme-btn" title="Toggle Light/Dark Mode">
+          <i data-lucide="sun" class="sun-icon" style="width: 20px; height: 20px;"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Screens -->
+
+    <!-- Screen 1: Summarizer -->
+    <main id="summarizerScreen" class="screen active">
+      <div class="dashboard-grid">
+        <!-- Input Form Section -->
+        <section class="card">
+          <h2 class="card-title">
+            <i data-lucide="file-edit" style="color: var(--accent-primary);"></i> Disruption Details
+          </h2>
+
+          <!-- Presets Panel -->
+          <div class="presets-container">
+            <span class="presets-label">Template Presets</span>
+            <div id="presetChips" class="preset-chips">
+              <!-- Preset chips loaded by JS -->
+            </div>
+          </div>
+
+          <form id="disruptionForm">
+            <div class="form-group">
+              <label for="adminName">Admin Name <span class="required">*</span></label>
+              <input type="text" id="adminName" class="form-control" placeholder="Enter your name" required>
+            </div>
+
+            <div class="form-group">
+              <label for="supplierName">Supplier Name <span class="required">*</span></label>
+              <input type="text" id="supplierName" class="form-control" placeholder="e.g., Hyderabad Wholesale Logistics, Krishna Agro Industries" required>
+            </div>
+
+            <div class="form-group">
+              <label for="supplierInputs">Supplier Communication / Delay Notice <span class="required">*</span></label>
+              <textarea id="supplierInputs" class="form-control" placeholder="Paste the supplier email, WhatsApp text, or details regarding the delay/shortage..." required></textarea>
+              <div id="charCounter" class="char-counter">0 characters</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i> Generate AI Summary
+            </button>
+          </form>
+        </section>
+
+        <!-- Output Summary Display Section -->
+        <section class="card" id="outputCard">
+          <h2 class="card-title">
+            <i data-lucide="file-text" style="color: var(--accent-secondary);"></i> AI Analysis Report
+          </h2>
+
+          <!-- Placeholder when no report is generated -->
+          <div id="outputPlaceholder" class="output-placeholder">
+            <div class="output-placeholder-icon">
+              <i data-lucide="brain-circuit" style="width: 48px; height: 48px;"></i>
+            </div>
+            <h3>No Report Generated Yet</h3>
+            <p>Fill out the form on the left and click "Generate AI Summary" or select a preset to analyze a supplier alert using Groq Llama 3.</p>
+          </div>
+
+          <!-- Loading state -->
+          <div id="loadingContainer" class="loading-container">
+            <div class="spinner"></div>
+            <p class="pulse-text" id="loadingText">Processing supplier alerts & estimating customer impact...</p>
+          </div>
+
+          <!-- The generated report content -->
+          <div id="outputContainer" class="output-container">
+            <div class="output-header">
+              <div class="meta-info">
+                <span>Lat:</span> <span id="outLatency">0s</span> |
+                <span>Ver:</span> <span id="outVersion">v4</span>
+              </div>
+              <div class="output-actions">
+                <button id="regenerateBtn" class="btn-icon" title="Regenerate Summary">
+                  <i data-lucide="rotate-cw" style="width: 16px; height: 16px;"></i>
+                </button>
+                <button id="copyBtn" class="btn-icon" title="Copy to Clipboard">
+                  <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
+                </button>
+                <button id="downloadTxtBtn" class="btn-icon" title="Download Text File">
+                  <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+                </button>
+                <button id="printBtn" class="btn-icon" title="Export as PDF / Print">
+                  <i data-lucide="printer" style="width: 16px; height: 16px;"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Markdown content will render here -->
+            <div id="reportMarkdown" class="markdown-body"></div>
+
+            <!-- Feedback Rating Section -->
+            <div class="feedback-box">
+              <div class="feedback-title">Rate the quality of this AI output</div>
+              <div class="star-rating" id="starRating">
+                <span class="star" data-rating="1">★</span>
+                <span class="star" data-rating="2">★</span>
+                <span class="star" data-rating="3">★</span>
+                <span class="star" data-rating="4">★</span>
+                <span class="star" data-rating="5">★</span>
+              </div>
+              <div class="comment-input-container">
+                <input type="text" id="feedbackComment" class="form-control" placeholder="Add an optional comment to help improve prompt engineering...">
+                <button id="submitFeedbackBtn" class="btn btn-secondary" style="width: auto;">Submit</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Screen 2: History Log -->
+    <main id="historyScreen" class="screen">
+      <section class="card">
+        <h2 class="card-title">
+          <i data-lucide="history" style="color: var(--accent-primary);"></i> Disruption Logs
+        </h2>
+        <div class="history-controls">
+          <div class="search-wrapper">
+            <input type="text" id="historySearch" class="form-control" placeholder="Search by Supplier, Admin or keywords...">
+          </div>
+        </div>
+        <div id="historyList" class="history-list">
+          <!-- History items loaded dynamically -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Screen 3: Analytics Dashboard -->
+    <main id="analyticsScreen" class="screen">
+      <!-- High level stat counters -->
+      <div class="analytics-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Logged Alerts</div>
+          <div class="stat-val" id="statTotal">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Average Output Quality</div>
+          <div class="stat-val" id="statRating">0.0 / 5</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Average AI Latency</div>
+          <div class="stat-val" id="statLatency">0.0s</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Feedback Coverage</div>
+          <div class="stat-val" id="statCoverage">0%</div>
+        </div>
+      </div>
+
+      <!-- Charts layout -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3 style="margin-bottom: 1rem; font-size: 1rem; color: var(--text-main);">Daily Disruption Volume</h3>
+          <div class="chart-container">
+            <canvas id="volumeChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3 style="margin-bottom: 1rem; font-size: 1rem; color: var(--text-main);">Frequent Supplier Alerts</h3>
+          <div class="chart-container">
+            <canvas id="supplierChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="detailModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Disruption Details</h3>
+        <button id="modalCloseBtn" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px;">
+          <div><strong>Supplier:</strong> <span id="modalSupplier"></span></div>
+          <div><strong>Admin:</strong> <span id="modalAdmin"></span></div>
+          <div><strong>Report Date:</strong> <span id="modalDate"></span></div>
+          <div><strong>AI Latency:</strong> <span id="modalLatency"></span></div>
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="margin-bottom: 0.5rem; color: var(--accent-secondary);">Raw Communication Input:</h4>
+          <pre id="modalRawInput" style="white-space: pre-wrap; font-family: monospace; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; font-size: 0.85rem; border: 1px solid var(--card-border); max-height: 150px; overflow-y: auto; color: var(--text-muted);"></pre>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 0.5rem; color: var(--accent-primary);">AI Generated Summary Report:</h4>
+          <div id="modalAiOutput" class="markdown-body" style="background: rgba(0,0,0,0.1); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);"></div>
+        </div>
+        <div id="modalFeedbackInfo" style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--card-border); font-size: 0.9rem;">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
+    <span id="toastMessage">Action completed successfully.</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
