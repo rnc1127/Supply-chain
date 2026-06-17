@@ -70,6 +70,7 @@ const el = {
   reportMarkdown: document.getElementById('reportMarkdown'),
   regenerateBtn: document.getElementById('regenerateBtn'),
   copyBtn: document.getElementById('copyBtn'),
+  downloadPdfBtn: document.getElementById('downloadPdfBtn'),
   downloadTxtBtn: document.getElementById('downloadTxtBtn'),
   printBtn: document.getElementById('printBtn'),
   starRating: document.getElementById('starRating'),
@@ -148,6 +149,7 @@ function setupListeners() {
 
   // Output actions
   el.copyBtn.addEventListener('click', copyOutput);
+  el.downloadPdfBtn.addEventListener('click', downloadCurrentPdf);
   el.downloadTxtBtn.addEventListener('click', downloadTxt);
   el.printBtn.addEventListener('click', () => window.print());
   el.regenerateBtn.addEventListener('click', () => handleSubmit());
@@ -389,6 +391,21 @@ function downloadTxt() {
   document.body.removeChild(a);
   URL.revokeObjectURL(a.href);
   showToast('File download started!');
+}
+
+function downloadCurrentPdf() {
+  if (!state.lastGeneratedData) return showToast('No report to download.', 'danger');
+  const item = {
+    supplier_name: el.supplierInput.value || 'Unknown Supplier',
+    admin_name: el.adminInput.value || 'Admin',
+    raw_input: el.inputsArea.value || '',
+    ai_output: state.lastGeneratedData.aiOutput,
+    response_time_ms: state.lastGeneratedData.responseTimeMs || 0,
+    created_at: new Date().toISOString(),
+    rating: state.selectedRating || null,
+    feedback_comment: el.feedbackComment.value || null
+  };
+  downloadHistoryItemPDF(item);
 }
 
 function downloadHistoryItem(item) {

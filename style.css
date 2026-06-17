@@ -2426,3 +2426,22 @@ body.light-mode .history-txt-btn:hover {
   background: rgba(8, 145, 178, 0.18);
   color: #164e63;
 }
+
+/* ─── PDF Button Accent in Output Actions ───────────────────────────────────── */
+.btn-icon-pdf {
+  border-color: rgba(99, 102, 241, 0.35);
+  color: #a5b4fc;
+}
+.btn-icon-pdf:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+}
+body.light-mode .btn-icon-pdf {
+  color: #4f46e5;
+  border-color: rgba(79, 70, 229, 0.25);
+}
+body.light-mode .btn-icon-pdf:hover {
+  background: rgba(79, 70, 229, 0.08);
+}
