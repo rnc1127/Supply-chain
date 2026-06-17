@@ -80,7 +80,8 @@ const el = {
   historyCountBadge: document.getElementById('historyCountBadge'),
   detailModal: document.getElementById('detailModal'),
   modalCloseBtn: document.getElementById('modalCloseBtn'),
-  modalDownloadBtn: document.getElementById('modalDownloadBtn'),
+  modalDownloadPdfBtn: document.getElementById('modalDownloadPdfBtn'),
+  modalDownloadTxtBtn: document.getElementById('modalDownloadTxtBtn'),
   modalSupplier: document.getElementById('modalSupplier'),
   modalAdmin: document.getElementById('modalAdmin'),
   modalDate: document.getElementById('modalDate'),
@@ -166,7 +167,10 @@ function setupListeners() {
 
   // Modal close & download
   el.modalCloseBtn.addEventListener('click', closeModal);
-  el.modalDownloadBtn.addEventListener('click', () => {
+  el.modalDownloadPdfBtn.addEventListener('click', () => {
+    if (state.currentModalItem) downloadHistoryItemPDF(state.currentModalItem);
+  });
+  el.modalDownloadTxtBtn.addEventListener('click', () => {
     if (state.currentModalItem) downloadHistoryItem(state.currentModalItem);
   });
   window.addEventListener('click', e => { if (e.target === el.detailModal) closeModal(); });
@@ -429,7 +433,94 @@ function downloadHistoryItem(item) {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(a.href);
-  showToast(`Downloaded report for ${item.supplier_name}`);
+  showToast(`Downloaded TXT for ${item.supplier_name}`);
+}
+
+function downloadHistoryItemPDF(item) {
+  const date = new Date(item.created_at);
+  const ratingHtml = item.rating
+    ? `<span style="color:#f59e0b;">${'★'.repeat(item.rating)}${'☆'.repeat(5 - item.rating)}</span> (${item.rating}/5)`
+    : '<span style="color:#9ca3af;">Not rated</span>';
+  const commentHtml = item.feedback_comment
+    ? `<p style="margin-top:4px;"><strong>Feedback:</strong> <em>"${item.feedback_comment}"</em></p>`
+    : '';
+  const aiHtml = renderMarkdown(item.ai_output);
+
+  const html = `<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<title>Disruption Report — ${item.supplier_name}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', Arial, sans-serif; color: #1e293b; padding: 40px; line-height: 1.6; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #6366f1; padding-bottom: 16px; margin-bottom: 24px; }
+  .brand h1 { font-size: 20px; color: #6366f1; font-weight: 700; }
+  .brand p { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; }
+  .date-box { text-align: right; font-size: 12px; color: #64748b; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .meta-item { background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; }
+  .meta-item .label { font-size: 10px; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.05em; margin-bottom: 2px; }
+  .meta-item .value { font-size: 14px; font-weight: 600; color: #0f172a; }
+  .section { margin-bottom: 24px; }
+  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6366f1; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #e2e8f0; }
+  .raw-input { background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 13px; color: #475569; white-space: pre-wrap; font-family: 'Courier New', monospace; }
+  .ai-output { padding: 4px 0; font-size: 14px; }
+  .ai-output h1 { font-size: 18px; color: #0f172a; margin: 16px 0 8px; }
+  .ai-output h2 { font-size: 15px; color: #334155; margin: 14px 0 6px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; }
+  .ai-output h3 { font-size: 14px; color: #475569; margin: 12px 0 4px; }
+  .ai-output p { margin-bottom: 8px; }
+  .ai-output ul, .ai-output ol { margin: 8px 0; padding-left: 20px; }
+  .ai-output li { margin-bottom: 4px; }
+  .ai-output strong { color: #0891b2; }
+  .feedback { background: #fffbeb; padding: 12px 16px; border-radius: 8px; border: 1px solid #fde68a; font-size: 13px; }
+  .footer { margin-top: 32px; padding-top: 12px; border-top: 2px solid #e2e8f0; text-align: center; font-size: 11px; color: #94a3b8; }
+  @media print { body { padding: 20px; } }
+</style>
+</head><body>
+  <div class="header">
+    <div class="brand">
+      <h1>⚡ Supply Chain Disruption Report</h1>
+      <p>Manikanta Enterprises &bull; Hyderabad</p>
+    </div>
+    <div class="date-box">
+      <div style="font-weight:600;color:#0f172a;">${date.toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' })}</div>
+      <div>${date.toLocaleTimeString()}</div>
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-item"><div class="label">Supplier</div><div class="value">${item.supplier_name}</div></div>
+    <div class="meta-item"><div class="label">Reported By</div><div class="value">${item.admin_name}</div></div>
+    <div class="meta-item"><div class="label">AI Latency</div><div class="value">${(item.response_time_ms / 1000).toFixed(2)}s</div></div>
+    <div class="meta-item"><div class="label">Rating</div><div class="value">${ratingHtml}</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Raw Supplier Communication</div>
+    <div class="raw-input">${item.raw_input}</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">AI Generated Analysis</div>
+    <div class="ai-output">${aiHtml}</div>
+  </div>
+
+  ${commentHtml ? `<div class="feedback">${commentHtml}</div>` : ''}
+
+  <div class="footer">Generated by Supply Chain AI &bull; Manikanta Enterprises &bull; Powered by Groq Llama 3</div>
+</body></html>`;
+
+  const printWindow = window.open('', '_blank', 'width=900,height=700');
+  printWindow.document.write(html);
+  printWindow.document.close();
+  // Wait for fonts to load then trigger print (Save as PDF)
+  printWindow.onload = () => {
+    setTimeout(() => {
+      printWindow.print();
+    }, 400);
+  };
+  showToast('PDF print dialog opened!');
 }
 
 // ==================== HISTORY ====================
@@ -477,13 +568,20 @@ function renderHistory(items) {
         <div style="display:flex;gap:0.75rem;align-items:center;">
           <span>${latency}s</span>
           ${stars ? `<span class="rating-badge">${stars}</span>` : '<span style="opacity:0.4;">No rating</span>'}
-          <button class="btn-icon history-download-btn" title="Download Report" aria-label="Download Report">
-            <i data-lucide="download" style="width:14px;height:14px;"></i>
+          <button class="btn-icon history-pdf-btn" title="Download PDF" aria-label="Download PDF">
+            <i data-lucide="file-text" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="btn-icon history-txt-btn" title="Download TXT" aria-label="Download TXT">
+            <i data-lucide="file-down" style="width:14px;height:14px;"></i>
           </button>
         </div>
       </div>`;
-    // Download button click (stop propagation so it doesn't open the modal)
-    card.querySelector('.history-download-btn').addEventListener('click', (e) => {
+    // Download buttons (stop propagation so they don't open the modal)
+    card.querySelector('.history-pdf-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      downloadHistoryItemPDF(item);
+    });
+    card.querySelector('.history-txt-btn').addEventListener('click', (e) => {
       e.stopPropagation();
       downloadHistoryItem(item);
     });
