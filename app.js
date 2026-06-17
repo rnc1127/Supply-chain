@@ -565,14 +565,14 @@ function renderHistory(items) {
           <i data-lucide="user" style="width:12px;height:12px;"></i>
           <span>${item.admin_name}</span>
         </div>
-        <div style="display:flex;gap:0.75rem;align-items:center;">
-          <span>${latency}s</span>
-          ${stars ? `<span class="rating-badge">${stars}</span>` : '<span style="opacity:0.4;">No rating</span>'}
-          <button class="btn-icon history-pdf-btn" title="Download PDF" aria-label="Download PDF">
-            <i data-lucide="file-text" style="width:14px;height:14px;"></i>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <span style="font-size:0.75rem;">${latency}s</span>
+          ${stars ? `<span class="rating-badge">${stars}</span>` : '<span style="opacity:0.4;font-size:0.75rem;">No rating</span>'}
+          <button class="history-dl-btn history-pdf-btn" title="Download PDF">
+            <i data-lucide="file-text" style="width:13px;height:13px;"></i> PDF
           </button>
-          <button class="btn-icon history-txt-btn" title="Download TXT" aria-label="Download TXT">
-            <i data-lucide="file-down" style="width:14px;height:14px;"></i>
+          <button class="history-dl-btn history-txt-btn" title="Download TXT">
+            <i data-lucide="file-down" style="width:13px;height:13px;"></i> TXT
           </button>
         </div>
       </div>`;

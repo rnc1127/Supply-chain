@@ -2363,3 +2363,66 @@ body.light-mode .modal-ai-output {
     padding: 0.5rem 0.8rem;
   }
 }
+
+/* ─── History Download Buttons (Prominent) ──────────────────────────────────── */
+.history-dl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border: none;
+  transition: var(--transition-smooth);
+  letter-spacing: 0.02em;
+}
+
+.history-pdf-btn {
+  background: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
+.history-pdf-btn:hover {
+  background: rgba(99, 102, 241, 0.4);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(99, 102, 241, 0.3);
+}
+
+.history-txt-btn {
+  background: rgba(34, 211, 238, 0.15);
+  color: #67e8f9;
+  border: 1px solid rgba(34, 211, 238, 0.3);
+}
+
+.history-txt-btn:hover {
+  background: rgba(34, 211, 238, 0.35);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(34, 211, 238, 0.25);
+}
+
+/* Light mode */
+body.light-mode .history-pdf-btn {
+  background: rgba(99, 102, 241, 0.1);
+  color: #4f46e5;
+  border-color: rgba(99, 102, 241, 0.25);
+}
+body.light-mode .history-pdf-btn:hover {
+  background: rgba(99, 102, 241, 0.2);
+  color: #312e81;
+}
+
+body.light-mode .history-txt-btn {
+  background: rgba(8, 145, 178, 0.08);
+  color: #0891b2;
+  border-color: rgba(8, 145, 178, 0.2);
+}
+body.light-mode .history-txt-btn:hover {
+  background: rgba(8, 145, 178, 0.18);
+  color: #164e63;
+}
